@@ -6,10 +6,7 @@ import se.kh.iv1350.pointofsale.dto.ItemDTO;
 import se.kh.iv1350.pointofsale.integration.AccountingSystem;
 import se.kh.iv1350.pointofsale.integration.InventorySystem;
 import se.kh.iv1350.pointofsale.integration.Printer;
-import se.kh.iv1350.pointofsale.integration.observer.Observer;
-import se.kh.iv1350.pointofsale.logAPI.TotalRevenueFileOutput;
 import se.kh.iv1350.pointofsale.model.Sale;
-import se.kh.iv1350.pointofsale.view.TotalRevenueView;
 
 /**
  * Calls to the model pass through this class.
@@ -44,6 +41,8 @@ public class Controller {
     /**
      * Retrieves information from inventory system and adds that item to the sale.
      * @param scannedItemId barcode from scanned item, for this application it will be a pre-set integer.
+     * @throws ItemNotFoundException when the searched scannedItemID does not match any existing itemID's
+     * @throws ServerConnectionFailException when the connection to the database fails
      */
     public void addItemToSale(int scannedItemId) throws ItemNotFoundException, ServerConnectionFailException {
         ItemDTO itemDTO = inventorySystem.retrieveItemInformation(scannedItemId);
@@ -92,12 +91,6 @@ public class Controller {
     public void printReceipt(int paymentAmount)
     {
         sale.printReceipt(printer, paymentAmount);
-    }
-
-    public void attach (Observer obsView, Observer obsFile)
-    {
-        accountingSystem.attach(obsView);
-        accountingSystem.attach(obsFile);
     }
 
 
